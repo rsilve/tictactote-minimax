@@ -57,7 +57,7 @@ export function availableMoves(game: Game) {
     }, [] as number[])
 }
 
-export function gameScore(game: Game, [player, opponent]: GameSet, depth: number): number {
+export function gameScore(game: Game, [player, opponent]: GameSet, depth: number = 0): number {
     if (win(game, player)) return 10 - depth
     if (win(game, opponent)) return depth - 10
     return 0

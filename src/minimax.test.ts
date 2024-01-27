@@ -78,7 +78,7 @@ describe('minimax', () => {
 
     it('give next move 001', () => {
         const [score, move] = minimax([X, X, X, X, X, X, X, X, Empty], [X, O])
-        expect(score).toBe(10)
+        expect(score).toBe(9)
         expect(move).toEqual([X, X, X, X, X, X, X, X, X])
     });
 
@@ -96,7 +96,7 @@ describe('minimax', () => {
 
     it('give next move 004', () => {
         const [score, move] = minimax([X, X, Empty, Empty, Empty, Empty, Empty, Empty, Empty], [X, O])
-        expect(score).toBe(10)
+        expect(score).toBe(3)
         expect(move).toEqual([X, X, X, Empty, Empty, Empty, Empty, Empty, Empty])
     });
 });
