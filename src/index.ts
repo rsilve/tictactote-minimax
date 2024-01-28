@@ -1,17 +1,17 @@
-import {Game, GameSet, isOver, minimax, O, win, X} from "./minimax";
+import {Game, isOver, O, Player, win, X, findBestMove} from "./minimax";
 
 
 let game: Game = [X, ' ', ' ', O, X, ' ', ' ', ' ', ' ']
-let set: GameSet = [O, X]
+let player: Player = X
 let score = 0
 do {
-    const [moveScore, move] = minimax(game, set)
+    const [moveScore, move] = findBestMove(game, player)
     game = move
     score = moveScore
-    console.log(set[0], score, game)
-    if (win(game, set[0])) break
+
+    if (win(game, player)) break
     if (isOver(game)) break
-    set = [set[1], set[0]]
+    player = "O"
 } while (true)
 
 

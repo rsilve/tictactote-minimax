@@ -53,12 +53,12 @@ describe('score', () => {
         expect(gameScore(emptyGame, [X, O])).toBe(0)
     });
 
-    it('should return score 10', () => {
-        expect(gameScore([X, X, X, Empty, Empty, Empty, Empty, Empty, Empty], [X, O])).toBe(10)
+    it('should return score 100', () => {
+        expect(gameScore([X, X, X, Empty, Empty, Empty, Empty, Empty, Empty], [X, O])).toBe(100)
     });
 
-    it('should return score -10', () => {
-        expect(gameScore([X, X, X, Empty, Empty, Empty, Empty, Empty, Empty], [O, X])).toBe(-10)
+    it('should return score -100', () => {
+        expect(gameScore([X, X, X, Empty, Empty, Empty, Empty, Empty, Empty], [O, X])).toBe(-100)
     });
 
 });
@@ -66,26 +66,26 @@ describe('score', () => {
 describe('minimax', () => {
     it('give next move win', () => {
         const [score, move] = minimax([X, X, X, X, X, X, X, X, X], [X, O])
-        expect(score).toBe(10)
+        expect(score).toBe(100)
         expect(move).toEqual([X, X, X, X, X, X, X, X, X])
     });
 
     it('give next move lose', () => {
         const [score, move] = minimax([X, X, X, X, X, X, X, X, X], [O, X])
-        expect(score).toBe(-10)
+        expect(score).toBe(-100)
         expect(move).toEqual([X, X, X, X, X, X, X, X, X])
     });
 
     it('give next move 001', () => {
         const [score, move] = minimax([X, X, X, X, X, X, X, X, Empty], [X, O])
-        expect(score).toBe(9)
-        expect(move).toEqual([X, X, X, X, X, X, X, X, X])
+        expect(score).toBe(100)
+        expect(move).toEqual([X, X, X, X, X, X, X, X, Empty])
     });
 
     it('give next move 002', () => {
         const [score, move] = minimax([O, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty], [X, O])
         expect(score).toBe(0)
-        expect(move).toEqual([O, X, Empty, Empty, Empty, Empty, Empty, Empty, Empty])
+        expect(move).toContain(X)
     });
 
     it('give next move 003', () => {
@@ -96,7 +96,7 @@ describe('minimax', () => {
 
     it('give next move 004', () => {
         const [score, move] = minimax([X, X, Empty, Empty, Empty, Empty, Empty, Empty, Empty], [X, O])
-        expect(score).toBe(3)
+        expect(score).toBe(99)
         expect(move).toEqual([X, X, X, Empty, Empty, Empty, Empty, Empty, Empty])
     });
 });

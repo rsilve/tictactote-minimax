@@ -10,6 +10,7 @@ export type Game = [GameValue, GameValue, GameValue, GameValue, GameValue, GameV
 
 export type GameSet = [Player, Player]
 
+
 const winBitmap = [
     Number.parseInt("111000000", 2),
     Number.parseInt("000111000", 2),
@@ -35,6 +36,10 @@ export function toBitmap(game: Game, player: Player) {
     return Number.parseInt(str, 2)
 }
 
+export function winningPosition(bitmap: number) {
+    return bitmap.toString(2).padStart(9, '0').split('').map(v => v === "1")
+}
+
 export function win(game: Game, player: Player) {
     const bitmap = toBitmap(game, player)
     return winBitmap.find(value => (value & bitmap) === value)
@@ -58,42 +63,48 @@ export function availableMoves(game: Game) {
 }
 
 export function gameScore(game: Game, [player, opponent]: GameSet, depth: number = 0): number {
-    if (win(game, player)) return 10 - depth
-    if (win(game, opponent)) return depth - 10
+    if (win(game, player)) return 100 - depth
+    if (win(game, opponent)) return depth - 100
     return 0
 }
 
 export function minimax(game: Game, set: GameSet, activePlayer = true, depth = 0): [number, Game] {
-
     if (isEmpty(game)) return [0, move(game, set[0], Math.floor(Math.random() * 9))]
 
-    if (isOver(game)) return [gameScore(game, set, depth), game]
+    const currentScore = gameScore(game, set, depth)
+    if (isOver(game)) return [currentScore, game]
+    if (currentScore !== 0) return [currentScore, game]
 
-    type Result = {score: number, game: Game}
+    type Result = { score: number, bestMove: Game }
     const results: Result[] = []
 
     availableMoves(game).map(index => {
         const moved = move(game, activePlayer ? set[0] : set[1], index)
         const [score] = minimax(moved, set, !activePlayer, depth + 1)
-        results.push({score, game: moved})
+        results.push({score, bestMove: moved})
     })
 
     if (activePlayer) {
-        const {score, game} = results.reduce((max, current, currentIndex) => {
-            if (current.score > max.score) {
-                return current
-            }
-            return max
-        }, {score: -1000, game: emptyGame})
-        return [score, game]
+        const {score} = [...results]
+            .sort((a, b) => b.score - a.score)
+            .shift() ?? {score: 1000, bestMove: game}
+        const bestResults = results.filter((v) => v.score === score)
+        //console.log(activePlayer ? set[0] : set[1], score, results, bestResults)
+        const random = bestResults[Math.floor(Math.random() * bestResults.length)]
+        return [random.score, random.bestMove]
     } else {
-        const {score, game} = results.reduce((max, current, currentIndex) => {
-            if (current.score < max.score) {
-                return current
-            }
-            return max
-        }, {score: 1000, game: emptyGame})
-        return [score, game]
+        const {score} = [...results]
+            .sort((a, b) => a.score - b.score)
+            .shift() ?? {score: -1000, bestMove: game}
+        const bestResults = results.filter((v) => v.score === score)
+        //console.log(activePlayer ? set[0] : set[1], score, results, bestResults)
+        const random = bestResults[Math.floor(Math.random() * bestResults.length)]
+        return [random.score, random.bestMove]
     }
 
+}
+
+export function findBestMove(game: Game, player: Player) {
+    const opponent = player === X ? O : X
+    return minimax(game, [player, opponent])
 }
